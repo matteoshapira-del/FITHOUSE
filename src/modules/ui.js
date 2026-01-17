@@ -157,6 +157,43 @@ export const ui = {
             reader.readAsText(file);
         });
 
+        if (this.elements.btnManualLog) {
+            this.elements.btnManualLog.addEventListener('click', () => {
+                const date = this.elements.inputManualDate?.value;
+                const weight = this.elements.inputManualWeight?.value;
+
+                if (date && weight) {
+                    store.addManualLog(date, weight);
+                    this.elements.inputManualDate.value = '';
+                    this.elements.inputManualWeight.value = '';
+                    alert('Log added!');
+                } else {
+                    alert('Please fill Date and Weight');
+                }
+            });
+        }
+
+        // Tooltip Click Toggle (Mobile Fix)
+        const infoIcons = document.querySelectorAll('.info-icon');
+        infoIcons.forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent document click from closing immediately
+                e.preventDefault(); // Prevent weird focus behavior
+
+                // Close others
+                infoIcons.forEach(other => {
+                    if (other !== icon) other.classList.remove('active');
+                });
+
+                icon.classList.toggle('active');
+            });
+        });
+
+        // Close tooltip when clicking anywhere else
+        document.addEventListener('click', () => {
+            infoIcons.forEach(icon => icon.classList.remove('active'));
+        });
+
         // Manual Log (Graph Tab)
         this.elements.btnManualLog.addEventListener('click', () => {
             const date = this.elements.inputManualDate.value;

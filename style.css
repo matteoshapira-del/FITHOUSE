@@ -359,7 +359,8 @@ input[type=range]::-webkit-slider-runnable-track {
     margin-bottom: 8px;
 }
 
-.info-icon:hover .tooltip-content {
+.info-icon:hover .tooltip-content,
+.info-icon.active .tooltip-content {
     visibility: visible;
     opacity: 1;
 }
