@@ -289,3 +289,92 @@ input[type=range]::-webkit-slider-runnable-track {
     /* Increased height */
     width: 100%;
 }
+
+/* Tooltip Styles */
+.info-icon {
+    cursor: help;
+    position: relative;
+    font-size: 0.9rem;
+    margin-left: 5px;
+}
+
+.tooltip-content {
+    visibility: hidden;
+    width: 280px;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 15px;
+    position: absolute;
+    z-index: 1000;
+    top: 125%;
+    /* Position BELOW the icon */
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    pointer-events: none;
+}
+
+/* Mobile Tweaks for Tooltip */
+@media (max-width: 480px) {
+    .tooltip-content {
+        width: 250px;
+        /* Slightly narrower */
+        font-size: 0.75rem;
+        /* Smaller text */
+        padding: 10px;
+        left: auto;
+        right: -10px;
+        /* Align to right edge to avoid being cut off */
+        transform: none;
+    }
+
+    .tooltip-content::after {
+        left: auto;
+        right: 15px;
+        /* Move arrow to match */
+    }
+}
+
+.tooltip-content strong {
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 5px;
+}
+
+.tooltip-content small {
+    color: #aaa;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.info-icon:hover .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Arrow */
+.tooltip-content::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    /* Move arrow to TOP of tooltip */
+    top: auto;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent rgba(20, 20, 20, 0.95) transparent;
+    /* Point UP */
+}
