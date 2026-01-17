@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>FITHOUSE</title>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1>FITHOUSE</h1>
+        </header>
+
+        <main>
+            <!-- TAB 1: DAILY LOG -->
+            <section id="tab-daily" class="tab-content active" data-tab="tab-daily">
+                <div class="card">
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <input type="text" id="item-name" placeholder="Meal / Activity Name (Optional)"
+                            style="margin:0;">
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                            <label style="color:var(--color-text-muted)">Points (1pt = 100cal)</label>
+                            <span id="points-value" style="font-weight:700; color:var(--color-primary)">1 (100
+                                cal)</span>
+                            <span class="info-icon">ℹ️
+                                <div class="tooltip-content">
+                                    <strong>The 100-Calorie Cheat Sheet</strong><br>
+                                    🏃 Running: 9 minutes<br>
+                                    <small>(Moderate pace, ~8km/h or 5mph)</small><br>
+                                    🏊 Swimming: 12 minutes<br>
+                                    <small>(Freestyle, moderate laps)</small><br>
+                                    🏄 Surfing: 14 minutes<br>
+                                    <small>(Active paddling & riding—not sitting!)</small><br>
+                                    🚶 Walking: 20 minutes<br>
+                                    <small>(Brisk pace, approx. 2,000 steps)</small><br>
+                                    🧘 Mat Pilates: 20 minutes<br>
+                                    <small>(General floor exercises)</small><br>
+                                    ⚖️ Balance Board: 28 minutes<br>
+                                    <small>(Continuous balancing)</small>
+                                </div>
+                            </span>
+                        </div>
+                        <!-- Range: -20 to 20 ?? Or just positive? Spec says "Add or Remove points". 
+                         Let's do -20 to +20. Default 1. -->
+                        <input type="range" id="item-points" min="-20" max="20" value="1" step="0.5">
+                        <div
+                            style="display:flex; justify-content:space-between; font-size:0.8rem; color:#666; margin-top:5px;">
+                            <span>-2000</span>
+                            <span>0</span>
+                            <span>+2000</span>
+                        </div>
+                    </div>
+
+                    <button id="btn-add" class="primary">ADD TO LOG</button>
+                </div>
+
+                <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <label>Daily Weight (kg)</label>
+                    <input type="number" id="daily-weight" placeholder="00.0"
+                        style="width:80px; margin:0; text-align:center;">
+                </div>
+
+                <h3 style="margin:20px 0 10px 0; color:var(--color-text-muted); font-size:0.9rem;">TODAY'S LOG</h3>
+                <div id="log-list" style="display:flex; flex-direction:column; gap:10px;">
+                    <!-- Items go here -->
+                    <div style="text-align:center; color:#444; padding:20px;">No items yet today</div>
+                </div>
+
+                <div id="gauge-container" class="gauge-container">
+                    <div class="stat-box">
+                        <h3>Net Calories</h3>
+                        <div id="gauge-total" class="value">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>TDEE</h3>
+                        <div id="gauge-tdee" class="value">2200</div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Deficit</h3>
+                        <div id="gauge-deficit" class="value" style="color:var(--color-primary)">0</div>
+                    </div>
+                </div>
+
+                <button id="btn-log-day" class="primary"
+                    style="margin-top:30px; background: linear-gradient(135deg, #00e5ff, #0099cc); box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);">
+                    LOG DAY & SAVE
+                </button>
+            </section>
+
+            <!-- TAB 2: GRAPH -->
+            <section id="tab-graph" class="tab-content" data-tab="tab-graph">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <h2>Progress</h2>
+                        <span style="font-size:0.8rem; color:#888;">Extrapolated vs Actual</span>
+                    </div>
+                    <div id="graph-container">
+                        <canvas id="weightChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <p style="font-size:0.9rem; color:#aaa; line-height:1.4;">
+                        <strong>Dotted Line:</strong> The goal path from start to target. <br>
+                        <strong>Cyan Line:</strong> Your actual logged weight. <br>
+                        <strong>Green Line:</strong> Where you are heading based on your average calorie deficit.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h2>Manual Entry</h2>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                        <input type="date" id="manual-date">
+                        <input type="number" id="manual-weight" placeholder="Weight (kg)">
+                    </div>
+                    <input type="number" id="manual-points" placeholder="Total Points (e.g. 5 for 500 cal surplus)">
+                    <button id="btn-manual-log" class="primary">ADD / UPDATE ENTRY</button>
+                </div>
+
+                <div class="card">
+                    <h2>Log History</h2>
+                    <div id="historical-log-list"
+                        style="max-height: 200px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
+                        <!-- Logs go here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: SETTINGS -->
+            <section id="tab-settings" class="tab-content" data-tab="tab-settings">
+                <div class="card">
+                    <h2>Profile</h2>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div>
+                            <label>Age</label>
+                            <input type="number" id="setting-age">
+                        </div>
+                        <div>
+                            <label>Height (cm)</label>
+                            <input type="number" id="setting-height">
+                        </div>
+                        <div>
+                            <label>Base Weight (kg)</label>
+                            <input type="number" id="setting-base-weight">
+                        </div>
+                        <div>
+                            <label>Target Weight (kg)</label>
+                            <input type="number" id="setting-target-weight">
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <label>Start Date</label>
+                        <input type="date" id="setting-start-date">
+                    </div>
+                    <div style="margin-top:10px;">
+                        <label>Target Date</label>
+                        <input type="date" id="setting-target-date">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Preferences</h2>
+                    <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                        <input type="checkbox" id="setting-color-coding" style="width:auto; transform:scale(1.5);">
+                        <label>Enable Color Coded Deficit</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Data Management</h2>
+                    <button id="btn-save-data" class="primary" style="margin-bottom:10px;">EXPORT BACKUP</button>
+                    <button id="btn-load-data"
+                        style="width:100%; padding:15px; background:#333; color:white; border:none; border-radius:8px; margin-bottom:10px;">IMPORT
+                        BACKUP</button>
+                    <input type="file" id="file-input" style="display:none" accept=".json">
+
+                    <hr style="border-color:#333; margin:15px 0;">
+                    <button id="btn-reset-data" class="destructive"
+                        style="width:100%; padding:15px; border-radius:8px; display:block; cursor:pointer;">⚠️ RESET ALL
+                        DATA</button>
+                </div>
+            </section>
+        </main>
+
+        <nav>
+            <button class="nav-btn active" data-tab="tab-daily">
+                <span style="font-size:1.2rem;">📝</span>
+                Daily Log
+            </button>
+            <button class="nav-btn" data-tab="tab-graph">
+                <span style="font-size:1.2rem;">📈</span>
+                Graph
+            </button>
+            <button class="nav-btn" data-tab="tab-settings">
+                <span style="font-size:1.2rem;">⚙️</span>
+                Settings
+            </button>
+        </nav>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
