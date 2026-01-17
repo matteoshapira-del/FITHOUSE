@@ -359,7 +359,15 @@ input[type=range]::-webkit-slider-runnable-track {
     margin-bottom: 8px;
 }
 
-.info-icon:hover .tooltip-content,
+/* Desktop Hover interaction */
+@media (hover: hover) {
+    .info-icon:hover .tooltip-content {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+/* Active state (Mobile Tap / JS Toggle) */
 .info-icon.active .tooltip-content {
     visibility: visible;
     opacity: 1;
